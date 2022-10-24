@@ -46,19 +46,22 @@ rawEn,rawSp = list(zip(*data));english,spanish = list(rawEn),list(rawSp)
 english,spanish=list(map(lambda x:x.split(" "),english)),list(map(lambda x:x.split(" "),spanish)) #ace what the fuck
 
 flattened_english = list(english | traverse)
-flattened_spanish = list(toki | traverse)
+flattened_spanish = list(spanish | traverse)
 num_pairs=len(english)
 english_counter=Counter(flattened_english)
 spanish_counter=Counter(flattened_spanish)
 
 spa_words = list(spanish_counter.keys())
-
+eng_words = list(english_counter.keys())
 
 spanish_tokenizer=dict(zip(sorted(spa_words),list(range(0, len(spa_words)))))
 english_tokenizer=dict(zip(sorted(eng_words),list(range(0, len(eng_words)))))
 
 max_english_sentence_length=max(list(map(len, english)))
 max_spanish_sentence_length=max(list(map(len, spanish)))
+
+print(max_english_sentence_length, max_spanish_sentence_length )
+
 
 num_encoder_tokens=len(english_tokenizer)
 num_decoder_tokens=len(spa_words)
@@ -74,13 +77,13 @@ for seq in english[:maxPairs]:
   zeros = [0]*(max_english_sentence_length - len(temp))
   encoder_input_data[i] = np.array(temp+zeros)
   i+=1
-decoder_input_data = np.ndarray((maxPairs,max_toki_sentence_length))
+decoder_input_data = np.ndarray((maxPairs,max_spanish_sentence_length))
 gc.collect()
 
 i=0
-for seq in toki[:maxPairs]:
-  temp = list(map(lambda x:toki_tokenizer[x], seq))
-  zeros = [0]*(max_toki_sentence_length - len(temp))
+for seq in spanish[:maxPairs]:
+  temp = list(map(lambda x:spanish_tokenizer[x], seq))
+  zeros = [0]*(max_spanish_sentence_length - len(temp))
   decoder_input_data[i] = np.array(temp+zeros)
   i+=1
 def onehot(seq):
@@ -120,7 +123,7 @@ encoder_states = [state_h, state_c]
 
 #decoder embedding and dense layer (STOP SETTING THE DENSE NEURON COUNT TO ONE ACE)
 decoder_inputs = Input(shape=(None,))
-x = Embedding(num_decoder_tokens, latent_dim,input_length=max_toki_sentence_length)(decoder_inputs)
+x = Embedding(num_decoder_tokens, latent_dim,input_length=max_spanish_sentence_length)(decoder_inputs)
 x = LSTM(latent_dim, return_sequences=True)(x, initial_state=encoder_states)
 decoder_outputs = Dense(num_decoder_tokens, activation='softmax')(x)
 
@@ -134,7 +137,7 @@ from keras.utils.vis_utils import plot_model
 #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
 cp_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath="~/env/Baseline LSTM (Forward)/checkpoints/",
+    filepath="~/env/Transfer Model/checkpoints/",
     verbose=1,
     save_weights_only=False,
     save_freq='epoch',period=500)
