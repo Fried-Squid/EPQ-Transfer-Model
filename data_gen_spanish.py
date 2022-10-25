@@ -154,6 +154,6 @@ for seg in range(segment_count):
         print(f'decoder_target_data/segment{str(seg)}')
     del decoder_target_data
 
-params_to_save = np.asarray([[segment_size, segment_count],[max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens]])
+params_to_save = np.asarray([[segment_size, segment_count,None,None],[max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens]])
 
 np.save('spa_data/params.npy',params_to_save)
