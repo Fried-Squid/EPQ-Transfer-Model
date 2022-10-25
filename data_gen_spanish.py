@@ -104,6 +104,7 @@ for seg in range(segment_count):
       encoder_input_data[i] = np.array(temp+zeros)
       i+=1
     np.save(f'~/env/Transfer Model/spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
+    del encoder_input_data
 gc.collect()
 
 for seg in range(segment_count):
@@ -116,6 +117,7 @@ for seg in range(segment_count):
       decoder_input_data[i] = np.array(temp+zeros)
       i+=1
     np.save(f'~/env/Transfer Model/spa_data/decoder_input_data/segment{str(seg)}.npy', decoder_input_data)
+    del decoder_input_data
 gc.collect()
 
 for seg in range(segment_count):
@@ -128,10 +130,4 @@ for seg in range(segment_count):
       decoder_target_data[i] = onehot(seq)
       i+=1
     np.save(f'~/env/Transfer Model/spa_data/decoder_target_data/segment{str(seg)}.npy', decoder_target_data)
-
-#This is an offset check, the second line (target data) should be offset by a single timestep.
-print(str(list(map(lambda x:f'{int(x):03}', decoder_input_data[5]))).replace("'",""))
-def f(x):
-  try: return f'{int(x.index(1.0)):03}'
-  except: return '000'
-print(str(list(map(lambda x:f(list(x)),list(decoder_target_data[5])))).replace("'",""))
+    del decoder_target_data
