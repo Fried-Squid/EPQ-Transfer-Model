@@ -62,6 +62,21 @@ print("Example pair: %s" % str(data[0])[1:-1].replace("', ", "' --> '"))        
 rawEn,rawSp = list(zip(*data));english,spanish = list(rawEn),list(rawSp)
 english,spanish=list(map(lambda x:x.split(" "),english)),list(map(lambda x:x.split(" "),spanish)) #ace what the fuck
 
+#This codeblock removes sentences if their translations are too long.
+lengths = Counter(list(map(len, spanish)))
+siglevel = 0.01
+lensToRemove = []
+for length in lengths.keys():
+    if lengths[length] > len(spanish) / siglevel:
+        lensToRemove.append(length)
+
+
+indexesToRemove = sorted([spanish.index(value) for value in spanish if len(value) in lensToRemove], reverse=True)
+for index in indexesToRemove:
+    del english[index]
+    del spanish[index]
+
+
 flattened_english = list(english | traverse)
 flattened_spanish = list(spanish | traverse)
 num_pairs=len(english)
@@ -92,7 +107,7 @@ def onehot(seq):
   i=0
   for token in seq:
     temp = np.zeros(num_decoder_tokens)
-    temp[token]=1.0
+    temp[token]=1
     out[i]=temp;i+=1
   return out
 
@@ -124,7 +139,7 @@ for seg in range(segment_count):
 gc.collect()
 
 for seg in range(segment_count):
-    decoder_target_data = np.ndarray((segment_size,max_spanish_sentence_length,num_decoder_tokens))
+    decoder_target_data = np.ndarray((segment_size,max_spanish_sentence_length,num_decoder_tokens),dtype=np.uint8)
     gc.collect()
 
     i=0
