@@ -113,11 +113,9 @@ for seg in range(segment_count):
     i=0
     for seq in english[segment_size*seg:segment_size*(seg+1)]:
       temp = list(map(lambda x:english_tokenizer[x], seq))
-      print(temp)
       zeros = [0]*(max_english_sentence_length - len(temp))
       encoder_input_data[i] = np.array(temp+zeros)
       i+=1
-    print(encoder_input_data[1]);exit()
     np.save(f'spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
     if seg%10 == 0:
         print(f'encoder_input_data/segment{str(seg)}')
