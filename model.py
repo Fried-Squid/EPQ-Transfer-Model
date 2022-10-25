@@ -7,7 +7,7 @@ import gc                                                                       
 from tensorflow.keras import optimizers                                         #adam
 import os
 
-def train(epochs, batch_size, latent_dim, lr, max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens, encoder_input_data, decoder_input_data, decoder_target_data,segment_num,load_flag=0,pretrained_path=0):
+def train(epochs, batch_size, latent_dim, lr, encoder_input_data, decoder_input_data, decoder_target_data,segment_num,load_flag,pretrained_path,max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens,num_decoder_tokens):
     #encoder embedding and input layers
     if load_flag == 0:
         encoder_inputs = Input(shape=(None,))
@@ -33,4 +33,4 @@ def train(epochs, batch_size, latent_dim, lr, max_english_sentence_length, max_s
               validation_split=0.2
               )
 
-    model.save(f'{checkpoint_path}/TRAINED_segment{segment_num}.h5')
+    model.save(f'{checkpoint_path}/TRAINED_segment{segment_num}.tf')
