@@ -83,10 +83,9 @@ sorted_spa_words = sorted(spa_words, key=lambda x:spanish_counter[x])
 #calculates things
 
 num_pairs=len(english)
-
 #wee woo bullshit lines, changes the token of the 10th percentile common words to a 0
-spanish_tokenizer=dict(zip(sorted_spa_words,list(range(1, round(len(spa_words)*9/10)+1)) + list([0] * len(spa_words))))
-english_tokenizer=dict(zip(sorted_eng_words,list(range(1, round(len(eng_words)*9/10)+1)) + list([0] * len(spa_words))))
+spanish_tokenizer=dict(zip(sorted_spa_words,list(list(range(1, round(len(spa_words)*9/10)+1)) + list([0] * len(spa_words)))))
+english_tokenizer=dict(zip(sorted_eng_words,list(list(range(1, round(len(eng_words)*9/10)+1)) + list([0] * len(spa_words)))))
 #normal code
 
 max_english_sentence_length=max(list(map(len, english)))
@@ -103,8 +102,6 @@ print(max_english_sentence_length)
 print(max_spanish_sentence_length)
 print(num_encoder_tokens)
 print(num_decoder_tokens)
-
-exit()
 
 def onehot(seq):
   seq = list(map(lambda x:spanish_tokenizer[x], seq))
