@@ -71,6 +71,7 @@ del zipped
 
 #this codeblock replaces uncommon tokens and replaces them with <UNKNOWN>
 flattened_english = list(english | traverse)
+print(len(flattened_english))
 flattened_spanish = list(spanish | traverse)
 english_counter = Counter(flattened_english)
 spanish_counter = Counter(flattened_spanish)
@@ -79,34 +80,20 @@ eng_words = list(english_counter.keys())
 
 sorted_eng_words = sorted(eng_words, key=lambda x:english_counter[x])
 sorted_spa_words = sorted(spa_words, key=lambda x:spanish_counter[x])
-
-unkown_words_eng = sorted_eng_words[:round(len(eng_words)*99/100)]
-unkown_words_spa = sorted_spa_words[:round(len(spa_words)*99/100)]
-
-newEng = []
-for sentence in english:
-    out = [token if token not in unkown_words_eng else "<UNKNOWN>" for token in sentence]
-    newEng.append(out)
-english = newEng
-
-newSpa = []
-for sentence in spanish:
-    out = [token if token not in unkown_words_spa else "<UNKNOWN>" for token in sentence]
-    newSpa.append(out)
-
-
 #calculates things
 
 num_pairs=len(english)
 
-spanish_tokenizer=dict(zip(sorted(spa_words),list(range(0, len(spa_words)))))
-english_tokenizer=dict(zip(sorted(eng_words),list(range(0, len(eng_words)))))
+#wee woo bullshit lines, changes the token of the 10th percentile common words to a 0
+spanish_tokenizer=dict(zip(sorted_spa_words,list(range(1, round(len(spa_words)*9/10)+1)) + list([0] * len(spa_words))))
+english_tokenizer=dict(zip(sorted_eng_words,list(range(1, round(len(eng_words)*9/10)+1)) + list([0] * len(spa_words))))
+#normal code
 
 max_english_sentence_length=max(list(map(len, english)))
 max_spanish_sentence_length=max(list(map(len, spanish)))
 
-num_encoder_tokens=len(english_tokenizer)
-num_decoder_tokens=len(spa_words)
+num_encoder_tokens=len(set(english_tokenizer.values()))
+num_decoder_tokens=len(set(spanish_tokenizer.values()))
 
 #data stuff
 segment_size = 500
