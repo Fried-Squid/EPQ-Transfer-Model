@@ -78,14 +78,14 @@ spanish_counter = Counter(flattened_spanish)
 spa_words = list(spanish_counter.keys())
 eng_words = list(english_counter.keys())
 
-sorted_eng_words = sorted(eng_words, key=lambda x:english_counter[x])
-sorted_spa_words = sorted(spa_words, key=lambda x:spanish_counter[x])
+sorted_eng_words = sorted(eng_words, key=lambda x:english_counter[x], reverse=True)
+sorted_spa_words = sorted(spa_words, key=lambda x:spanish_counter[x], reverse=True)
 #calculates things
-
 num_pairs=len(english)
 #wee woo bullshit lines, changes the token of the 10th percentile common words to a 0
-spanish_tokenizer=dict(zip(sorted_spa_words,list(list(range(1, round(len(spa_words)*9/10)+1)) + list([0] * len(spa_words)))))
-english_tokenizer=dict(zip(sorted_eng_words,list(list(range(1, round(len(eng_words)*9/10)+1)) + list([0] * len(spa_words)))))
+spanish_tokenizer=dict(zip(sorted_spa_words,list(list(range(1, round(len(spa_words)*9/10)+1)) + list(np.zeros((10000,),dtype=int)))))
+english_tokenizer=dict(zip(sorted_eng_words,list(list(range(1, round(len(eng_words)*9/10)+1)) + list(np.zeros((10000,),dtype=int)))))
+print(english_tokenizer['<s>'])
 #normal code
 
 max_english_sentence_length=max(list(map(len, english)))
@@ -97,11 +97,6 @@ num_decoder_tokens=len(set(spanish_tokenizer.values()))
 #data stuff
 segment_size = 500
 segment_count = len(english)//segment_size
-print(segment_count)
-print(max_english_sentence_length)
-print(max_spanish_sentence_length)
-print(num_encoder_tokens)
-print(num_decoder_tokens)
 
 def onehot(seq):
   seq = list(map(lambda x:spanish_tokenizer[x], seq))
@@ -113,7 +108,6 @@ def onehot(seq):
     out[i]=temp;i+=1
   return out
 
-
 for seg in range(segment_count):
     encoder_input_data = np.ndarray((segment_size,max_english_sentence_length))
     i=0
@@ -122,7 +116,7 @@ for seg in range(segment_count):
       zeros = [0]*(max_english_sentence_length - len(temp))
       encoder_input_data[i] = np.array(temp+zeros)
       i+=1
-    print(encoder_input_data);exit()
+    print(encoder_input_data[1]);exit()
     np.save(f'spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
     if seg%10 == 0:
         print(f'encoder_input_data/segment{str(seg)}')
