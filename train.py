@@ -4,15 +4,14 @@ from model import train
 
 #important
 resume               = False
-
+epochs_per           = 20
 data_path            = "spa_data"
-net_epochs           = 7500
 checkpoint_path      = "spa_checkpoints"
 final_model_path     = "spa_final_model"
 
-batch_size = 128
-latent_dim = 128
-learning_rate = 0.001
+batch_size = 32
+latent_dim = 256
+learning_rate = 0.01
 
 
 def clear_dir(folder):
@@ -43,7 +42,7 @@ for segment in range(0,segment_size-trained_upto):
     decoder_target_data = np.load(f'{data_path}/decoder_target_data/segment{segment}.npy', allow_pickle=True)
     pretrained_path = f'{checkpoint_path}/TRAINED_segment{segment-1}.tf'
     max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens = params
-    train(net_epochs//segment_num,
+    train(epochs_per,
           batch_size,
           latent_dim,
           learning_rate,
@@ -59,5 +58,5 @@ for segment in range(0,segment_size-trained_upto):
           num_decoder_tokens,
           checkpoint_path)
 
-gross_epochs = (net_epochs//segment_num)*segment_num
+gross_epochs = epochs_per*segment_num
 print(gross_epochs)
