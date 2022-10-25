@@ -85,7 +85,7 @@ num_decoder_tokens=len(spa_words)
 
 #data stuff
 segment_size = 500
-segment_count = len(english)//500
+segment_count = 500
 def onehot(seq):
   seq = list(map(lambda x:spanish_tokenizer[x], seq))
   out = np.zeros((max_spanish_sentence_length,num_decoder_tokens))
