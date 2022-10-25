@@ -85,7 +85,7 @@ num_pairs=len(english)
 #wee woo bullshit lines, changes the token of the 10th percentile common words to a 0
 spanish_tokenizer=dict(zip(sorted_spa_words,list(list(range(1, round(len(spa_words)*9/10)+1)) + list(np.zeros((10000,),dtype=int)))))
 english_tokenizer=dict(zip(sorted_eng_words,list(list(range(1, round(len(eng_words)*9/10)+1)) + list(np.zeros((10000,),dtype=int)))))
-print(english_tokenizer['darn'])
+
 #normal code
 
 max_english_sentence_length=max(list(map(len, english)))
@@ -111,8 +111,9 @@ def onehot(seq):
 for seg in range(segment_count):
     encoder_input_data = np.ndarray((segment_size,max_english_sentence_length))
     i=0
-    for seq in english[segment_size*(seg-1):segment_size*seg]:
+    for seq in english[segment_size*seg:segment_size*(seg+1)]:
       temp = list(map(lambda x:english_tokenizer[x], seq))
+      print(temp)
       zeros = [0]*(max_english_sentence_length - len(temp))
       encoder_input_data[i] = np.array(temp+zeros)
       i+=1
@@ -126,7 +127,7 @@ gc.collect()
 for seg in range(segment_count):
     decoder_input_data = np.ndarray((segment_size,max_spanish_sentence_length))
     i=0
-    for seq in spanish[segment_size*(seg-1):segment_size*seg]:
+    for seq in spanish[segment_size*seg:segment_size*(seg+1)]:
       temp = list(map(lambda x:spanish_tokenizer[x], seq))
       zeros = [0]*(max_spanish_sentence_length - len(temp))
       decoder_input_data[i] = np.array(temp+zeros)
@@ -140,7 +141,7 @@ gc.collect()
 for seg in range(segment_count):
     decoder_target_data = np.ndarray((segment_size,max_spanish_sentence_length,num_decoder_tokens),dtype=np.uint8)
     i=0
-    for each in spanish[segment_size*(seg-1):segment_size*seg]:
+    for each in spanish[segment_size*seg:segment_size*(seg+1)]:
       seq=list(each[1:])
       decoder_target_data[i] = onehot(seq)
       i+=1
