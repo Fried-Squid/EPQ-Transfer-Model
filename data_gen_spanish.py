@@ -116,42 +116,44 @@ def onehot(seq):
 
 for seg in range(segment_count):
     encoder_input_data = np.ndarray((segment_size,max_english_sentence_length))
-    gc.collect()
     i=0
-    for seq in english[:segment_size]:
+    for seq in english[segment_size*(seg-1):segment_size*seg]:
       temp = list(map(lambda x:english_tokenizer[x], seq))
       zeros = [0]*(max_english_sentence_length - len(temp))
       encoder_input_data[i] = np.array(temp+zeros)
       i+=1
     np.save(f'spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
+    if seg%10 == 0:
+        print(f'encoder_input_data/segment{str(seg)}')
     del encoder_input_data
 gc.collect()
 
 for seg in range(segment_count):
     decoder_input_data = np.ndarray((segment_size,max_spanish_sentence_length))
-    gc.collect()
     i=0
-    for seq in spanish[:segment_size]:
+    for seq in spanish[segment_size*(seg-1):segment_size*seg]:
       temp = list(map(lambda x:spanish_tokenizer[x], seq))
       zeros = [0]*(max_spanish_sentence_length - len(temp))
       decoder_input_data[i] = np.array(temp+zeros)
       i+=1
     np.save(f'spa_data/decoder_input_data/segment{str(seg)}.npy', decoder_input_data)
+    if seg%10 == 0:
+        print(f'decoder_input_data/segment{str(seg)}')
     del decoder_input_data
 gc.collect()
 
 for seg in range(segment_count):
     decoder_target_data = np.ndarray((segment_size,max_spanish_sentence_length,num_decoder_tokens),dtype=np.uint8)
-    gc.collect()
-
     i=0
-    for each in spanish[:segment_size]:
+    for each in spanish[segment_size*(seg-1):segment_size*seg]:
       seq=list(each[1:])
       decoder_target_data[i] = onehot(seq)
       i+=1
     np.save(f'spa_data/decoder_target_data/segment{str(seg)}.npy', decoder_target_data)
+    if seg%10 == 0:
+        print(f'decoder_target_data/segment{str(seg)}')
     del decoder_target_data
 
-params_to_save = np.asarray([[segment_size, segment_count][max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens]])
+params_to_save = np.asarray([[segment_size, segment_count],[max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens]])
 
 np.save('spa_data/params.npy',params_to_save)
