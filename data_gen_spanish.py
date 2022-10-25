@@ -30,6 +30,7 @@ def clear_dir(folder):
 for f in folders:
     clear_dir(f)
 
+
 USE_FREQUENCY_RESTRICTION = False
 latent_dim = 128
 epochs = 3000
