@@ -13,7 +13,7 @@ import gc                                                                       
 from tensorflow.keras import optimizers                                         #adam
 
 import os, shutil
-folders = ['~/env/Transfer Model/data/encoder_input_data','~/env/Transfer Model/data/decoder_input_data','~/env/Transfer Model/data/decoder_target_data']
+folders = ['~/env/Transfer Model/spa_data/encoder_input_data','~/env/Transfer Model/spa_data/decoder_input_data','~/env/Transfer Model/spa_data/decoder_target_data']
 def clear_dir(folder)
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
@@ -83,28 +83,6 @@ num_decoder_tokens=len(spa_words)
 #data stuff
 segment_size = 500
 segment_count = len(english)//500
-print(segment_count*segment_size)
-
-for i in range(segment_count):
-    encoder_input_data = np.ndarray((segment_size,max_english_sentence_length))
-    gc.collect()
-    i=0
-    for seq in english:
-      temp = list(map(lambda x:english_tokenizer[x], seq))
-      zeros = [0]*(max_english_sentence_length - len(temp))
-      encoder_input_data[i] = np.array(temp+zeros)
-      i+=1
-    np.save(f'~/env/Transfer Model/data/encoder_input_data/segment{str(i)}.npy', encoder_input_data)
-
-decoder_input_data = np.ndarray((maxPairs,max_spanish_sentence_length))
-gc.collect()
-
-i=0
-for seq in spanish[:maxPairs]:
-  temp = list(map(lambda x:spanish_tokenizer[x], seq))
-  zeros = [0]*(max_spanish_sentence_length - len(temp))
-  decoder_input_data[i] = np.array(temp+zeros)
-  i+=1
 def onehot(seq):
   seq = list(map(lambda x:spanish_tokenizer[x], seq))
   out = np.zeros((max_spanish_sentence_length,num_decoder_tokens))
@@ -114,14 +92,42 @@ def onehot(seq):
     temp[token]=1.0
     out[i]=temp;i+=1
   return out
-decoder_target_data = np.ndarray((maxPairs,max_spanish_sentence_length,num_decoder_tokens))
+
+
+for seg in range(segment_count):
+    encoder_input_data = np.ndarray((segment_size,max_english_sentence_length))
+    gc.collect()
+    i=0
+    for seq in english[:segment_size]:
+      temp = list(map(lambda x:english_tokenizer[x], seq))
+      zeros = [0]*(max_english_sentence_length - len(temp))
+      encoder_input_data[i] = np.array(temp+zeros)
+      i+=1
+    np.save(f'~/env/Transfer Model/spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
 gc.collect()
 
-i=0
-for each in spanish[:maxPairs]:
-  seq=list(each[1:])
-  decoder_target_data[i] = onehot(seq)
-  i+=1
+for seg in range(segment_count):
+    decoder_input_data = np.ndarray((segment_size,max_spanish_sentence_length))
+    gc.collect()
+    i=0
+    for seq in spanish[:segment_size]:
+      temp = list(map(lambda x:spanish_tokenizer[x], seq))
+      zeros = [0]*(max_spanish_sentence_length - len(temp))
+      decoder_input_data[i] = np.array(temp+zeros)
+      i+=1
+    np.save(f'~/env/Transfer Model/spa_data/decoder_input_data/segment{str(seg)}.npy', decoder_input_data)
+gc.collect()
+
+for seg in range(segment_count):
+    decoder_target_data = np.ndarray((segment_size,max_spanish_sentence_length,num_decoder_tokens))
+    gc.collect()
+
+    i=0
+    for each in spanish[:segment_size]:
+      seq=list(each[1:])
+      decoder_target_data[i] = onehot(seq)
+      i+=1
+    np.save(f'~/env/Transfer Model/spa_data/decoder_target_data/segment{str(seg)}.npy', decoder_target_data)
 
 #This is an offset check, the second line (target data) should be offset by a single timestep.
 print(str(list(map(lambda x:f'{int(x):03}', decoder_input_data[5]))).replace("'",""))
