@@ -13,17 +13,20 @@ import gc                                                                       
 from tensorflow.keras import optimizers                                         #adam
 
 import os, shutil
-folders = ['~/env/Transfer Model/spa_data/encoder_input_data','~/env/Transfer Model/spa_data/decoder_input_data','~/env/Transfer Model/spa_data/decoder_target_data']
+folders = ['spa_data/encoder_input_data','spa_data/decoder_input_data','spa_data/decoder_target_data']
 def clear_dir(folder):
     for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+        if ".gitignore" in filename:
+            pass
+        else:
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
 for f in folders:
     clear_dir(f)
 
@@ -103,7 +106,7 @@ for seg in range(segment_count):
       zeros = [0]*(max_english_sentence_length - len(temp))
       encoder_input_data[i] = np.array(temp+zeros)
       i+=1
-    np.save(f'~/env/Transfer Model/spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
+    np.save(f'spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
     del encoder_input_data
 gc.collect()
 
@@ -116,7 +119,7 @@ for seg in range(segment_count):
       zeros = [0]*(max_spanish_sentence_length - len(temp))
       decoder_input_data[i] = np.array(temp+zeros)
       i+=1
-    np.save(f'~/env/Transfer Model/spa_data/decoder_input_data/segment{str(seg)}.npy', decoder_input_data)
+    np.save(f'spa_data/decoder_input_data/segment{str(seg)}.npy', decoder_input_data)
     del decoder_input_data
 gc.collect()
 
@@ -129,5 +132,9 @@ for seg in range(segment_count):
       seq=list(each[1:])
       decoder_target_data[i] = onehot(seq)
       i+=1
-    np.save(f'~/env/Transfer Model/spa_data/decoder_target_data/segment{str(seg)}.npy', decoder_target_data)
+    np.save(f'spa_data/decoder_target_data/segment{str(seg)}.npy', decoder_target_data)
     del decoder_target_data
+
+params_to_save = np.asarray([[segment_size, segment_count][max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens]])
+
+np.save('spa_data/params.npy',params_to_save)

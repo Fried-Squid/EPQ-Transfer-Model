@@ -27,7 +27,6 @@ def train(epochs, batch_size, latent_dim, lr, max_english_sentence_length, max_s
     else:
         model = tf.keras.models.load_model(pretrained_path)
 
-
     model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
               batch_size=batch_size,
               epochs=epochs,
