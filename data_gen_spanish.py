@@ -12,6 +12,7 @@ import numpy as np                                                              
 import gc                                                                       #keeps memory usage low
 from tensorflow.keras import optimizers                                         #adam
 
+
 import os, shutil
 folders = ['spa_data/encoder_input_data','spa_data/decoder_input_data','spa_data/decoder_target_data']
 def clear_dir(folder):
@@ -61,38 +62,48 @@ shuffleData();                                                                  
 print("Example pair: %s" % str(data[0])[1:-1].replace("', ", "' --> '"))        #prints an example bitext pair
 
 rawEn,rawSp = list(zip(*data));english,spanish = list(rawEn),list(rawSp)
-english,spanish=list(map(lambda x:x.split(" "),english)),list(map(lambda x:x.split(" "),spanish)) #ace what the fuck
+english,spanish=list(map(lambda x:x.split(" "),english)),list(map(lambda x:x.split(" "),spanish))
 
 #This codeblock removes sentences if their translations are too long.
-lengths = Counter(list(map(len, spanish)))
-siglevel = 0.01
-lensToRemove = []
-for length in lengths.keys():
-    if lengths[length] > len(spanish)*siglevel:
-        lensToRemove.append(length)
-indexesToRemove = sorted([spanish.index(value) for value in spanish if len(value) in lensToRemove], reverse=True)
-for index in indexesToRemove:
-    del english[index]
-    del spanish[index]
+zipped = sorted(list(zip(english,spanish)),key=lambda x:len(x[1]))
+(english, spanish) = zip(*zipped[:round(len(zipped)*99/100)]) #strip longest hundreth
+del zipped
 
-
+#this codeblock replaces uncommon tokens and replaces them with <UNKNOWN>
 flattened_english = list(english | traverse)
 flattened_spanish = list(spanish | traverse)
-num_pairs=len(english)
-english_counter=Counter(flattened_english)
-spanish_counter=Counter(flattened_spanish)
-
+english_counter = Counter(flattened_english)
+spanish_counter = Counter(flattened_spanish)
 spa_words = list(spanish_counter.keys())
 eng_words = list(english_counter.keys())
+
+sorted_eng_words = sorted(eng_words, key=lambda x:english_counter[x])
+sorted_spa_words = sorted(spa_words, key=lambda x:spanish_counter[x])
+
+unkown_words_eng = sorted_eng_words[:round(len(eng_words)*99/100)]
+unkown_words_spa = sorted_spa_words[:round(len(spa_words)*99/100)]
+
+newEng = []
+for sentence in english:
+    out = [token if token not in unkown_words_eng else "<UNKNOWN>" for token in sentence]
+    newEng.append(out)
+english = newEng
+
+newSpa = []
+for sentence in spanish:
+    out = [token if token not in unkown_words_spa else "<UNKNOWN>" for token in sentence]
+    newSpa.append(out)
+
+
+#calculates things
+
+num_pairs=len(english)
 
 spanish_tokenizer=dict(zip(sorted(spa_words),list(range(0, len(spa_words)))))
 english_tokenizer=dict(zip(sorted(eng_words),list(range(0, len(eng_words)))))
 
 max_english_sentence_length=max(list(map(len, english)))
 max_spanish_sentence_length=max(list(map(len, spanish)))
-
-print(max_english_sentence_length, max_spanish_sentence_length )
-
 
 num_encoder_tokens=len(english_tokenizer)
 num_decoder_tokens=len(spa_words)
