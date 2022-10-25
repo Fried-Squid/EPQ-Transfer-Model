@@ -14,7 +14,7 @@ from tensorflow.keras import optimizers                                         
 
 import os, shutil
 folders = ['~/env/Transfer Model/spa_data/encoder_input_data','~/env/Transfer Model/spa_data/decoder_input_data','~/env/Transfer Model/spa_data/decoder_target_data']
-def clear_dir(folder)
+def clear_dir(folder):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
         try:
