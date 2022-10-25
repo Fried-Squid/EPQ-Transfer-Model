@@ -43,6 +43,11 @@ for segment in range(0,segment_size-trained_upto):
     decoder_target_data = np.load(f'{data_path}/decoder_target_data/segment{segment}.npy', allow_pickle=True)
     pretrained_path = f'{checkpoint_path}/TRAINED_segment{segment-1}.tf'
     max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens, num_decoder_tokens = params
+
+    print(decoder_input_data)
+    print(encoder_input_data)
+    print(decoder_target_data)
+    print(params)
     train(net_epochs//segment_num,
           batch_size,
           latent_dim,
