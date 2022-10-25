@@ -85,7 +85,7 @@ num_pairs=len(english)
 #wee woo bullshit lines, changes the token of the 10th percentile common words to a 0
 spanish_tokenizer=dict(zip(sorted_spa_words,list(list(range(1, round(len(spa_words)*9/10)+1)) + list(np.zeros((10000,),dtype=int)))))
 english_tokenizer=dict(zip(sorted_eng_words,list(list(range(1, round(len(eng_words)*9/10)+1)) + list(np.zeros((10000,),dtype=int)))))
-print(english_tokenizer['<s>'])
+print(english_tokenizer['darn'])
 #normal code
 
 max_english_sentence_length=max(list(map(len, english)))
