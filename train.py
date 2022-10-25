@@ -1,6 +1,5 @@
 import os, shutil
 
-
 global data_path            = "~/env/spa_data"
 global net_epochs           = 5000
 global checkpoint_path      = "~/env/spa_checkpoints"
