@@ -67,10 +67,8 @@ lengths = Counter(list(map(len, spanish)))
 siglevel = 0.01
 lensToRemove = []
 for length in lengths.keys():
-    if lengths[length] > len(spanish) / siglevel:
+    if lengths[length] > len(spanish)*siglevel:
         lensToRemove.append(length)
-
-
 indexesToRemove = sorted([spanish.index(value) for value in spanish if len(value) in lensToRemove], reverse=True)
 for index in indexesToRemove:
     del english[index]
@@ -100,7 +98,15 @@ num_decoder_tokens=len(spa_words)
 
 #data stuff
 segment_size = 500
-segment_count = 500
+segment_count = len(english)//segment_size
+print(segment_count)
+print(max_english_sentence_length)
+print(max_spanish_sentence_length)
+print(num_encoder_tokens)
+print(num_decoder_tokens)
+
+exit()
+
 def onehot(seq):
   seq = list(map(lambda x:spanish_tokenizer[x], seq))
   out = np.zeros((max_spanish_sentence_length,num_decoder_tokens))
