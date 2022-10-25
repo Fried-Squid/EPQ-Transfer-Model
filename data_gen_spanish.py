@@ -122,6 +122,7 @@ for seg in range(segment_count):
       zeros = [0]*(max_english_sentence_length - len(temp))
       encoder_input_data[i] = np.array(temp+zeros)
       i+=1
+    print(encoder_input_data);exit()
     np.save(f'spa_data/encoder_input_data/segment{str(seg)}.npy', encoder_input_data)
     if seg%10 == 0:
         print(f'encoder_input_data/segment{str(seg)}')
