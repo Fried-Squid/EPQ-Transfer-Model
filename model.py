@@ -7,7 +7,7 @@ import gc                                                                       
 from tensorflow.keras import optimizers                                         #adam
 import os
 
-def train(epochs, batch_size, latent_dim, lr, encoder_input_data, decoder_input_data, decoder_target_data,segment_num,load_flag,pretrained_path,max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens,num_decoder_tokens):
+def train(epochs, batch_size, latent_dim, lr, encoder_input_data, decoder_input_data, decoder_target_data,segment_num,load_flag,pretrained_path,max_english_sentence_length, max_spanish_sentence_length, num_encoder_tokens,num_decoder_tokens,checkpoint_path):
     #encoder embedding and input layers
     if load_flag == 0:
         encoder_inputs = Input(shape=(None,))
@@ -24,6 +24,7 @@ def train(epochs, batch_size, latent_dim, lr, encoder_input_data, decoder_input_
         #compile the model and optimizer
         model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
         model.compile(optimizer=optimizers.Adam(learning_rate=lr), loss='categorical_crossentropy', metrics=["accuracy"])
+        print(model.summary())
     else:
         model = tf.keras.models.load_model(pretrained_path)
 
