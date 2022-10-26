@@ -9,7 +9,7 @@ data_path            = "spa_data"
 checkpoint_path      = "spa_checkpoints"
 final_model_path     = "spa_final_model"
 
-batch_size = 16
+batch_size = 256
 latent_dim = 256
 learning_rate = 0.01
 
