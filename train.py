@@ -4,12 +4,12 @@ from model import train
 
 #important
 resume               = False
-epochs_per           = 20
+epochs_per           = 5
 data_path            = "spa_data"
 checkpoint_path      = "spa_checkpoints"
 final_model_path     = "spa_final_model"
 
-batch_size = 32
+batch_size = 16
 latent_dim = 256
 learning_rate = 0.01
 
